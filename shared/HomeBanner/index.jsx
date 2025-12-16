@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { useTheme } from 'react-native-elements';
 import { ScaledSheet } from 'react-native-size-matters';
-import Swiper from 'react-native-swiper';
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBanners } from '../../screens/Home/store/dispatchers';
 import BannerSlide from './BannerSlide';
@@ -25,15 +25,17 @@ export default function HomeBanner({ navigation }) {
 
   return (
     <View style={styles.container()}>
-      <Swiper
-        height='100%'
+      <SwiperFlatList
+        data={banners}
+        renderItem={({ item }) => (
+          <BannerSlide slide={item} textType={textType} labels={labels} navigation={navigation} />
+        )}
+        showPagination
         paginationStyle={styles.pagination()}
-        dot={<View style={styles.dot(colors)} />}
-        activeDot={<View style={styles.activeDot(colors)} />}>
-        {(banners).map((slide, index) => (
-          <BannerSlide key={index} slide={slide} textType={textType} labels={labels} navigation={navigation} />
-        ))}
-      </Swiper>
+        paginationStyleItem={styles.paginationDot(colors)}
+        paginationActiveColor={colors.white}
+        paginationDefaultColor={'rgba(255,255,255,0.3)'}
+      />
     </View>
   );
 }
@@ -43,28 +45,14 @@ const styles = ScaledSheet.create({
     ScaledSheet.create({
       marginBottom:5
     }),
-  dot: colors =>
+  paginationDot: colors =>
     ScaledSheet.create({
-      backgroundColor: colors.white,
-      opacity: 0.3,
       width: '8@ms',
       height: '8@ms',
       borderRadius: '4@ms',
-      marginLeft: '3@ms',
-      marginRight: '3@ms',
-      marginTop: '3@ms',
-      marginBottom: '3@ms',
-    }),
-  activeDot: colors =>
-    ScaledSheet.create({
+      marginHorizontal: '3@ms',
+      marginVertical: '3@ms',
       backgroundColor: colors.white,
-      width: '8@ms',
-      height: '8@ms',
-      borderRadius: '4@ms',
-      marginLeft: '3@ms',
-      marginRight: '3@ms',
-      marginTop: '3@ms',
-      marginBottom: '3@ms',
     }),
   pagination: () =>
     ScaledSheet.create({
